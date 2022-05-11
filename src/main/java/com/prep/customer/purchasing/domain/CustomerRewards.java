@@ -1,12 +1,10 @@
 package com.prep.customer.purchasing.domain;
 
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor

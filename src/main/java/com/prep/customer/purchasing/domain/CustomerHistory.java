@@ -1,8 +1,7 @@
 package com.prep.customer.purchasing.domain;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class CustomerHistory {
