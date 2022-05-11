@@ -1,9 +1,8 @@
 package com.prep.customer.purchasing.services.impl;
 
 import com.prep.customer.purchasing.domain.CustomerHistory;
-import com.prep.customer.purchasing.domain.enums.StatusEnum;
+import com.prep.customer.purchasing.domain.enums.Status;
 import com.prep.customer.purchasing.domain.Transaction;
-import com.prep.customer.purchasing.services.IRewardsService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,19 +10,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.prep.customer.purchasing.domain.enums.StatusEnum.*;
+import static com.prep.customer.purchasing.domain.enums.Status.*;
 
 @Service
-public class RewardsService implements IRewardsService {
-
-    private final static List<Integer> REQUIRED_DECIMAL_PLACES = Arrays.asList(0, 2);
-    private final static BigDecimal FIFTY = new BigDecimal(50.00);
-    private final static BigDecimal HUNDRED = new BigDecimal(100.00);
-    private final static Integer FIFTY_VALUE = 50;
-    private final static Integer HUNDRED_VALUE = 100;
-    private final static Integer FIFTY_MULTIPLIER = 1;
-    private final static Integer HUNDRED_MULTIPLIER = 2;
-
+public class RewardsService extends TransactionService {
     /**
      * isCustomerHistoryValid
      * - verify:
@@ -34,26 +24,37 @@ public class RewardsService implements IRewardsService {
      * @param history
      * @return Pair of boolean and valid status
      */
-    public Pair<Boolean, StatusEnum> isCustomerHistoryValid(CustomerHistory history) {
+    public Pair<Boolean, Status> isCustomerHistoryValid(CustomerHistory history) {
+
+        Pair<Boolean, Status> valid;
+
         if (history != null) {
             if (history.getCustomerId() != null) {
                 if (history.getTransactions() != null) {
-                    for (Transaction p : history.getTransactions()) {
-                        if (p.getCost() == null) {
-                            return new ImmutablePair<>(false, COST_REQUIRED);
-
-                        } else if (p.getCost().compareTo(BigDecimal.ZERO) < 0
-                                || !REQUIRED_DECIMAL_PLACES.contains(p.getCost().scale())) {
-                            return new ImmutablePair<>(false, COST_FORMAT_ERROR);
-
-                        }else if (p.getDate() == null) {
-                            return new ImmutablePair<>(false, PURCHASE_DATE_REQUIRED);
+                    for (Transaction t : history.getTransactions()) {
+//                        if (p.getCost() == null) {
+//                            return new ImmutablePair<>(false, COST_REQUIRED);
+//
+//                        } else if (p.getCost().compareTo(BigDecimal.ZERO) < 0
+//                                || !REQUIRED_DECIMAL_PLACES.contains(p.getCost().scale())) {
+//                            return new ImmutablePair<>(false, COST_FORMAT_ERROR);
+//
+//                        }else if (p.getDate() == null) {
+//                            return new ImmutablePair<>(false, PURCHASE_DATE_REQUIRED);
+//                        }
+//                    }
+//                    return new ImmutablePair<>(true, SUCCESS);
+//                }
+                        valid = isValid(t);
+                        if (!valid.getLeft()) {
+                            return valid;
                         }
                     }
                     return new ImmutablePair<>(true, SUCCESS);
                 }
             }
         }
+
         return new ImmutablePair<>(false, CUSTOMER_HISTORY_INVALID);
     }
 
@@ -92,7 +93,7 @@ public class RewardsService implements IRewardsService {
         } else if (cost.compareTo(FIFTY) > 0) {
             reward += (cost.intValue() - FIFTY_VALUE) * FIFTY_MULTIPLIER;
         }
-        
+
         return reward;
     }
 }
