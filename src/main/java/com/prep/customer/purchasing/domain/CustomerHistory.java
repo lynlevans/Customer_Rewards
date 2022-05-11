@@ -2,10 +2,12 @@ package com.prep.customer.purchasing.domain;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CustomerHistory {
 
-    Long customerId;
+    private Long customerId;
 
-    Purchase[] purchases;
+    private List<Transaction> transactions;
 }

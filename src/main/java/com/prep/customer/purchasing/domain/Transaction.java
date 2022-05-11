@@ -7,11 +7,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class Purchase {
+public class Transaction {
+
+    private Integer customerId;
 
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
-    LocalDateTime date;
+    private LocalDateTime date;
 
-    BigDecimal cost;
+    private BigDecimal cost;
 
 }
