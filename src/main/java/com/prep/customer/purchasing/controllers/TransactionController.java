@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +50,22 @@ public class TransactionController {
             logger.error("Exception retrieving transactions", e);
         }
 
-        return new ResponseEntity<>(ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @RequestMapping(value = "/{custId}", method = GET, produces = "application/json")
+    public ResponseEntity<String> getOne(@PathVariable Integer custId) {
+
+        try {
+            String responseStr =
+                    jsonMapper.writeValueAsString(
+                            transactionService.getTransactionByCustomerId(custId));
+            return new ResponseEntity<>(responseStr, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Exception retrieving transactions", e);
+        }
+
+        return new ResponseEntity<>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(
@@ -61,17 +77,17 @@ public class TransactionController {
         Pair<Boolean, Status> valid = transactionService.isValid(transaction);
 
         if (!valid.getLeft()) {
-            return new ResponseEntity<>(valid.getRight().name(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(valid.getRight().getStatus(), HttpStatus.BAD_REQUEST);
         }
 
         try {
             transactionService.save(transaction);
-            return new ResponseEntity<>(SUCCESS.name(), HttpStatus.CREATED);
+            return new ResponseEntity<>(SUCCESS.getStatus(), HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Exception creating transactions", e);
         }
 
-        return new ResponseEntity<>(ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "clearAll", method = POST)

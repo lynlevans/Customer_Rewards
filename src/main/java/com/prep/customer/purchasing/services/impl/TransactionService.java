@@ -36,6 +36,10 @@ public class TransactionService {
         return transactionRepository.findById(id).get();
     }
 
+    public List<Transaction> getTransactionByCustomerId(int custId) {
+        return transactionRepository.findByCustomerId(custId);
+    }
+
     public void save(Transaction Transaction) {
         transactionRepository.save(Transaction);
     }

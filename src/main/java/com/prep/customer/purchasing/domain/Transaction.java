@@ -12,7 +12,9 @@ import lombok.Data;
 @Table(name = "transaction")
 public class Transaction {
 
-    @Id @GeneratedValue private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotNull
     @Column(name = "customer_id")
