@@ -3,6 +3,7 @@ package com.prep.customer.purchasing.services;
 import com.prep.customer.purchasing.domain.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -41,6 +42,9 @@ public class RewardsService extends TransactionService {
 
         List<CustomerRewards> aggregatedResults = new ArrayList<>();
         List<Future<Pair<Boolean, CustomerRewards>>> tasks = new ArrayList<>();
+
+        customerIds =
+                (customerIds != null && !customerIds.isEmpty()) ? customerIds : getAllCustomerIds();
 
         for (Long cId : customerIds) {
             tasks.add(
@@ -147,21 +151,21 @@ public class RewardsService extends TransactionService {
     }
 
     /**
-     * monthsAreValid - Check that integer months value are valid
+     * monthsAreValid - Check that integer month values are valid
      *
      * @param startMonth
      * @param endMonth
      * @return boolean
      */
-    private Boolean areMonthsValid(Integer startMonth, Integer endMonth) {
+    public static Boolean areMonthsValid(Integer startMonth, Integer endMonth) {
         if (startMonth == null && endMonth == null) {
             return true;
         } else if (startMonth != null
-                && startMonth >= 0
-                && startMonth < 12
+                && startMonth >= Month.JANUARY.getValue()
+                && startMonth <= Month.DECEMBER.getValue()
                 && endMonth != null
-                && endMonth >= 0
-                && endMonth < 12) {
+                && endMonth >= Month.JANUARY.getValue()
+                && endMonth <= Month.DECEMBER.getValue()) {
             return true;
         }
 

@@ -1,6 +1,7 @@
 package com.prep.customer.purchasing.controllers;
 
 import static com.prep.customer.purchasing.domain.enums.Status.ERROR;
+import static com.prep.customer.purchasing.domain.enums.Status.MONTH_ID_ERROR;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,9 +33,13 @@ public class RewardsController {
 
     @RequestMapping(value = "/rewards", method = GET, produces = "application/json")
     public ResponseEntity<String> calculateRewards(
-            @RequestParam List<Long> customerIds,
+            @RequestParam(required = false) List<Long> customerIds,
             @RequestParam(required = false) Integer startMonth,
             @RequestParam(required = false) Integer endMonth) {
+
+        if (!RewardsService.areMonthsValid(startMonth, endMonth)) {
+            return new ResponseEntity(MONTH_ID_ERROR.getStatus(), HttpStatus.BAD_REQUEST);
+        }
 
         try {
             List<CustomerRewards> rewardsListing =

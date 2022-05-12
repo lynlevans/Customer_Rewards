@@ -58,6 +58,10 @@ public class TransactionService {
         transactionRepository.deleteAll();
     }
 
+    public List<Long> getAllCustomerIds() {
+        return transactionRepository.getAllCustomerIds();
+    }
+
     public static Pair<Boolean, Status> isValid(final Transaction t) {
         if (t.getCustomerId() == null) {
             return new ImmutablePair<>(false, CUSTOMER_ID_REQUIRED);
