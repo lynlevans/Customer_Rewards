@@ -38,6 +38,7 @@
 
 ### Usage
     See http://localhost:8080/customer-purchasing/swagger-ui/index.html
+    See CustRewards.postman_collection.json
 
     Using a Postman client:
         Request All customer rewards list for last 3 months:
@@ -76,8 +77,9 @@
             Map<String, Integer> monthlyRewards;
             Integer grandTotal = 0;
         }
-    Dates are stored without TimeZone detail. Further development will require that
-    transaction dates include the TimeZone where they were transacted.
+
+        Note: Dates are stored without TimeZone detail. Further development will require that
+              transaction dates include the TimeZone where they were transacted.
 
 
     
@@ -88,7 +90,7 @@
 
     Unit tests are run to verify the validation and rewards calculation logic.
     Unit tests should avoid exercising pure SpringBoot infrastructure code such as JPA repositories or Pojos.
-    This functionality is the industry standard and deployed world-wide.
+    This Spring functionality is the industry standard and deployed world-wide.
 
     Tests to exercise the Calculate Rewards Controller will be developed using a Postman suite,
-    some are included here via the Postman export.
+    some are included here via a Postman export.
