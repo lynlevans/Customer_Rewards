@@ -18,6 +18,10 @@ public class CustomerRewards {
     @Setter(AccessLevel.NONE)
     private Integer grandTotal = 0;
 
+    public CustomerRewards(Long customerId) {
+        this.customerId = customerId;
+    }
+
     public CustomerRewards(Long customerId, Map<String, Integer> monthlyRewards) {
         this.customerId = customerId;
         this.monthlyRewards = monthlyRewards;

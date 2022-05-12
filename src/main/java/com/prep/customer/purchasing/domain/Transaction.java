@@ -18,7 +18,7 @@ public class Transaction {
 
     @NotNull
     @Column(name = "customer_id")
-    private Integer customerId;
+    private Long customerId;
 
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
     @NotNull

@@ -2,17 +2,77 @@ package com.prep.customer.purchasing.services.impl;
 
 import static com.prep.customer.purchasing.domain.enums.Status.*;
 
-import com.prep.customer.purchasing.domain.CustomerHistory;
-import com.prep.customer.purchasing.domain.Transaction;
+import com.prep.customer.purchasing.domain.*;
 import com.prep.customer.purchasing.domain.enums.Status;
+import com.prep.customer.purchasing.repository.TransactionRepository;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RewardsService extends TransactionService {
+
+    @Value("${app.thread.pool.size}")
+    public Integer threadPoolSize;
+
+    @Autowired TransactionRepository transactionRepository;
+
+    ExecutorService executorService;
+
+    private final Logger logger = LoggerFactory.getLogger(RewardsService.class);
+
+    @PostConstruct
+    public void init() {
+        executorService = Executors.newFixedThreadPool(threadPoolSize);
+    }
+    /**
+     * process - Manage rewards calculation thread per each customer Id
+     *
+     * @param customerIds
+     * @param startMonth
+     * @param endMonth
+     * @return List CustomerRewards
+     */
+    public List<CustomerRewards> process(
+            List<Long> customerIds, Integer startMonth, Integer endMonth) {
+
+        List<CustomerRewards> aggregatedResults = new ArrayList<>();
+        List<Future<Pair<Boolean, CustomerRewards>>> tasks = new ArrayList<>();
+
+        for (Long cId : customerIds) {
+            tasks.add(
+                    executorService.submit(
+                            new CalculateRewardsCallable(cId, startMonth, endMonth)));
+        }
+
+        for (Future f : tasks) {
+            try {
+                Pair<Boolean, CustomerRewards> result = (Pair<Boolean, CustomerRewards>) f.get();
+                if (result.getLeft()) {
+                    aggregatedResults.add(result.getValue());
+                } else {
+                    logger.error(
+                            "Exception calculating rewards for custId {}.",
+                            result.getValue().getCustomerId());
+                }
+            } catch (Exception e) {
+                logger.error("Exception completing task.", e);
+            }
+        }
+
+        return aggregatedResults;
+    }
+
     /**
      * isCustomerHistoryValid - verify: customer id, purchases is not null cost is not null and
      * non-negative cost has zero or null and non-negative
@@ -28,25 +88,8 @@ public class RewardsService extends TransactionService {
             if (history.getCustomerId() != null) {
                 if (history.getTransactions() != null) {
                     for (Transaction t : history.getTransactions()) {
-                        //                        if (p.getCost() == null) {
-                        //                            return new ImmutablePair<>(false,
-                        // COST_REQUIRED);
-                        //
-                        //                        } else if (p.getCost().compareTo(BigDecimal.ZERO)
-                        // < 0
-                        //                                ||
-                        // !REQUIRED_DECIMAL_PLACES.contains(p.getCost().scale())) {
-                        //                            return new ImmutablePair<>(false,
-                        // COST_FORMAT_ERROR);
-                        //
-                        //                        }else if (p.getDate() == null) {
-                        //                            return new ImmutablePair<>(false,
-                        // PURCHASE_DATE_REQUIRED);
-                        //                        }
-                        //                    }
-                        //                    return new ImmutablePair<>(true, SUCCESS);
-                        //                }
                         valid = isValid(t);
+                        System.out.println(valid);
                         if (!valid.getLeft()) {
                             return valid;
                         }
@@ -60,26 +103,63 @@ public class RewardsService extends TransactionService {
     }
 
     /**
-     * @param history
-     * @return Map of date and total bonus
+     * CalculateRewardsCallable - Callable task to calculate customer's reward poins
+     *
+     * @return <Pair<Boolean, CustomerRewards>
      */
-    public Map<String, Integer> calculateMonthlyRewards(CustomerHistory history) {
-        Map<String, Integer> resultMap = new HashMap<>();
+    public class CalculateRewardsCallable implements Callable<Pair<Boolean, CustomerRewards>> {
 
-        history.getTransactions()
-                .forEach(
-                        tx -> {
-                            String currMon = tx.getDate().getMonth().name();
-                            resultMap.computeIfAbsent(currMon, f -> 0);
-                            int reward = calculateReward(tx.getCost());
-                            resultMap.put(currMon, resultMap.get(currMon) + reward);
-                        });
+        private Long customerId;
+        private Integer startMonth, endMonth;
+        private List<Transaction> custTransactions;
+        Map<String, Integer> rewardsMap = new HashMap<>();
 
-        return resultMap;
+        public CalculateRewardsCallable() {}
+
+        public CalculateRewardsCallable(Long customerId) {
+            this.customerId = customerId;
+        }
+
+        public CalculateRewardsCallable(Long customerId, Integer startMonth, Integer endMonth) {
+            this.customerId = customerId;
+            this.startMonth = startMonth;
+            this.endMonth = endMonth;
+        }
+
+        public Pair<Boolean, CustomerRewards> call() {
+            if (!monthsAreValid(startMonth, endMonth)) {
+                return new ImmutablePair<>(false, new CustomerRewards(customerId));
+            }
+
+            custTransactions = transactionRepository.findByCustomerId(customerId);
+
+            startMonth =
+                    startMonth == null ? LocalDateTime.now().getMonth().getValue() - 2 : startMonth;
+            endMonth = endMonth == null ? LocalDateTime.now().getMonth().getValue() : endMonth;
+
+            custTransactions =
+                    custTransactions.stream()
+                            .filter(
+                                    t ->
+                                            t.getDate().getMonth().getValue() >= startMonth
+                                                    && t.getDate().getMonth().getValue()
+                                                            <= endMonth)
+                            .collect(Collectors.toList());
+
+            custTransactions.forEach(
+                    tx -> {
+                        String currMon = tx.getDate().getMonth().name();
+                        rewardsMap.computeIfAbsent(currMon, f -> 0);
+                        int reward = calculateReward(tx.getCost());
+                        rewardsMap.put(currMon, rewardsMap.get(currMon) + reward);
+                    });
+
+            return new ImmutablePair(true, new CustomerRewards(customerId, rewardsMap));
+        }
     }
 
     /**
-     * calculateReward - perform reward calculation from cost
+     * calculateReward - perform reward calculation for individual cost
      *
      * @param cost
      * @return int reward value
@@ -96,5 +176,27 @@ public class RewardsService extends TransactionService {
         }
 
         return reward;
+    }
+
+    /**
+     * monthsAreValid - Check that integer months value are valid
+     *
+     * @param startMonth
+     * @param endMonth
+     * @return boolean
+     */
+    private Boolean monthsAreValid(Integer startMonth, Integer endMonth) {
+        if (startMonth == null && endMonth == null) {
+            return true;
+        } else if (startMonth != null
+                && startMonth >= 0
+                && startMonth < 12
+                && endMonth != null
+                && endMonth >= 0
+                && endMonth < 12) {
+            return true;
+        }
+
+        return false;
     }
 }

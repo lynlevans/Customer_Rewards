@@ -36,7 +36,7 @@ public class TransactionService {
         return transactionRepository.findById(id).get();
     }
 
-    public List<Transaction> getTransactionByCustomerId(int custId) {
+    public List<Transaction> getTransactionByCustomerId(Long custId) {
         return transactionRepository.findByCustomerId(custId);
     }
 
@@ -54,7 +54,7 @@ public class TransactionService {
 
     public Pair<Boolean, Status> isValid(final Transaction t) {
         if (t.getCustomerId() == null) {
-            return new ImmutablePair<>(false, COST_REQUIRED);
+            return new ImmutablePair<>(false, CUSTOMER_ID_REQUIRED);
 
         } else if (t.getCost() == null) {
             return new ImmutablePair<>(false, COST_REQUIRED);
