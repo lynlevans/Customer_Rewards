@@ -4,7 +4,6 @@ import static com.prep.customer.purchasing.domain.enums.Status.*;
 
 import com.prep.customer.purchasing.domain.*;
 import com.prep.customer.purchasing.domain.enums.Status;
-import com.prep.customer.purchasing.repository.TransactionRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +23,7 @@ public class RewardsService extends TransactionService {
     @Value("${app.thread.pool.size}")
     public Integer threadPoolSize;
 
-    @Autowired TransactionRepository transactionRepository;
+    // @Autowired TransactionRepository transactionRepository;
 
     ExecutorService executorService;
 
@@ -127,7 +125,7 @@ public class RewardsService extends TransactionService {
         }
 
         public Pair<Boolean, CustomerRewards> call() {
-            if (!monthsAreValid(startMonth, endMonth)) {
+            if (!areMonthsValid(startMonth, endMonth)) {
                 return new ImmutablePair<>(false, new CustomerRewards(customerId));
             }
 
@@ -164,8 +162,12 @@ public class RewardsService extends TransactionService {
      * @param cost
      * @return int reward value
      */
-    private int calculateReward(BigDecimal cost) {
+    public static int calculateReward(BigDecimal cost) {
         int reward = 0;
+
+        if (!isCostValid.apply(cost)) {
+            return reward;
+        }
 
         if (cost.compareTo(HUNDRED) > 0) {
             reward += (cost.intValue() - HUNDRED_VALUE) * HUNDRED_MULTIPLIER;
@@ -185,7 +187,7 @@ public class RewardsService extends TransactionService {
      * @param endMonth
      * @return boolean
      */
-    private Boolean monthsAreValid(Integer startMonth, Integer endMonth) {
+    private Boolean areMonthsValid(Integer startMonth, Integer endMonth) {
         if (startMonth == null && endMonth == null) {
             return true;
         } else if (startMonth != null
