@@ -1,0 +1,266 @@
+{
+	"info": {
+		"_postman_id": "4fc0899b-fc3f-499d-ad50-8b9c57b734e7",
+		"name": "CustRewards",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/customer-purchasing | rewards | GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/rewards?customerIds=5&startMonth=12&endMonth=12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "customerIds",
+							"value": "5"
+						},
+						{
+							"key": "startMonth",
+							"value": "12"
+						},
+						{
+							"key": "endMonth",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing | rewards | GET ALL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/rewards?customerIds=5&startMonth=12&endMonth=12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "customerIds",
+							"value": "5"
+						},
+						{
+							"key": "startMonth",
+							"value": "12"
+						},
+						{
+							"key": "endMonth",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing | POST",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"customerId\" : 1,\n\"date\" : \"05-05-2022 00:00:00\",\n\"cost\" : 87.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing | GET",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"customerId\" : 1,\n\"date\" : \"05-05-2022 00:00:00\",\n\"cost\" : 87.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing | GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"customerId\" : 1,\n\"date\" : \"05-05-2022 00:00:00\",\n\"cost\" : 87.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/transactions/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"transactions",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"customerId\" : 1,\n\"purchases\" : []\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customer-purchasing | ClearAll",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"customerId\" : 1,\n\"purchases\" : []\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/customer-purchasing/transactions/clearAll",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customer-purchasing",
+						"transactions",
+						"clearAll"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

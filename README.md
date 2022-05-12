@@ -13,20 +13,23 @@
           So, just a range of 3 months, represented as integers ( one-based for January ),
           is used to designate the months selected for the calculation.
           An exact 90-day range is not calcuated here.
-          So currently, in May, the last 3 months include March, Apr, May - in leiu today's current date.
+          So currently, in May, the last 3 months include March, Apr, May - in leiu of today's current date.
           A more fine-grained service can be developed to calculate rewards from 
-          Mar 12, 2022 - May 12, 2022, being that today is the 12th.
+          Mar 12, 2022 - May 12, 2022, for instance, since today is the 12th.
 
 ### Tech Stack
-    The service is built using Java 12, SpringBoot 2.6.7.
-    Transaction data is loaded in-memory using H2 DB.
-    Hibernate JPA and ExecutorService are also applied.
-    REST endpoints are available to invoke the service resources, 
+    *  Java 12
+    *  SpringBoot 2.6.7
+    *  H2 DB
+    *  Hibernate JPA
+    *  ExecutorService
+
+    *  REST endpoints are available to invoke the service resources, 
     specifically transactions can be added to a customer's history.
 
 
 ### Build
-`cd CustRewards`
+`cd CustRewards` or <top level project directory>
 
 `mvn package`
 
@@ -61,9 +64,6 @@
            POST http://localhost:8080/customer-purchasing//transactions/clearAll
 
 ### Data Structures
-    Dates are stored without TimeZone detail. Further development will require that
-    transaction dates include the TimeZone where they were transacted.
-
     Data structures:
         Transaction {
             Integer id;
@@ -76,14 +76,19 @@
             Map<String, Integer> monthlyRewards;
             Integer grandTotal = 0;
         }
+    Dates are stored without TimeZone detail. Further development will require that
+    transaction dates include the TimeZone where they were transacted.
+
 
     
 ### Test Philosophy
     Integration and unit tests are run by Maven.
-    The integration test is a high-level test that loads the full SpringBoot context.
+    The integration test is a high-level test to load the full SpringBoot context.
     This facilitates development as the SpringBoot instance is further configured.
 
     Unit tests are run to verify the validation and rewards calculation logic.
-    Unit tests should avoid exercising pure SpringBoot infrastructure code such as JPA repositories or Pojos since this functionality is industry standard and deployed world-wide.
+    Unit tests should avoid exercising pure SpringBoot infrastructure code such as JPA repositories or Pojos.
+    This functionality is the industry standard and deployed world-wide.
 
-    Tests to exercise the Calculate Rewards Controller can be developed using a Postman suite.
+    Tests to exercise the Calculate Rewards Controller will be developed using a Postman suite,
+    some are included here via the Postman export.
