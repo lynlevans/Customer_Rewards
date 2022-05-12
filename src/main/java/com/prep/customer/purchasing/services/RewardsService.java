@@ -43,8 +43,15 @@ public class RewardsService extends TransactionService {
         List<CustomerRewards> aggregatedResults = new ArrayList<>();
         List<Future<Pair<Boolean, CustomerRewards>>> tasks = new ArrayList<>();
 
+        List<Long> validCustIds = getAllCustomerIds();
+
+        // Filter for valid custIds from incoming list. If empty, process all custIds.
         customerIds =
-                (customerIds != null && !customerIds.isEmpty()) ? customerIds : getAllCustomerIds();
+                (customerIds != null && !customerIds.isEmpty())
+                        ? customerIds.stream()
+                                .filter(s -> validCustIds.contains(s))
+                                .collect(Collectors.toList())
+                        : validCustIds;
 
         for (Long cId : customerIds) {
             tasks.add(

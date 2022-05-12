@@ -20,6 +20,7 @@
 ### Tech Stack
     The service is built using Java 12, SpringBoot 2.6.7.
     Transaction data is loaded in-memory using H2 DB.
+    Hibernate JPA and ExecutorService are also applied.
     REST endpoints are available to invoke the service resources, 
     specifically transactions can be added to a customer's history.
 
@@ -36,13 +37,19 @@
     See http://localhost:8080/customer-purchasing/swagger-ui/index.html
 
     Using a Postman client:
-        Request customer rewards list for last 3 months:
-           GET http://localhost:8080/customer-purchasing/rewards?customerIds=1,2
+        Request All customer rewards list for last 3 months:
+           GET http://localhost:8080/customer-purchasing/rewards
     
+        Request customer rewards list for specific customers (last 3 months):
+           GET http://localhost:8080/customer-purchasing/rewards?customerIds=1,2
+
         Request customer rewards list with bounding months:
            GET http://localhost:8080/customer-purchasing/rewards?customerIds=1,2&startMonth=1&endMonth=3
     
-        Add customer transactions:
+        Get customer transactions:
+            GET localhost:8080/customer-purchasing/transactions/{customerId}
+        
+        Add customer transaction:
            POST http://localhost:8080/customer-purchasing/transactions/create
            {
              "customerId" : 1,
