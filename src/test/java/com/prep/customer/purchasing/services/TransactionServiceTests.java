@@ -3,7 +3,6 @@ package com.prep.customer.purchasing.services;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.prep.customer.purchasing.domain.enums.Status;
-import com.prep.customer.purchasing.services.impl.TransactionService;
 import java.math.BigDecimal;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;

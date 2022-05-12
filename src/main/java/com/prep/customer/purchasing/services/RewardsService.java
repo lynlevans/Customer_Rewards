@@ -1,9 +1,6 @@
-package com.prep.customer.purchasing.services.impl;
-
-import static com.prep.customer.purchasing.domain.enums.Status.*;
+package com.prep.customer.purchasing.services;
 
 import com.prep.customer.purchasing.domain.*;
-import com.prep.customer.purchasing.domain.enums.Status;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,8 +19,6 @@ public class RewardsService extends TransactionService {
 
     @Value("${app.thread.pool.size}")
     public Integer threadPoolSize;
-
-    // @Autowired TransactionRepository transactionRepository;
 
     ExecutorService executorService;
 
@@ -69,35 +64,6 @@ public class RewardsService extends TransactionService {
         }
 
         return aggregatedResults;
-    }
-
-    /**
-     * isCustomerHistoryValid - verify: customer id, purchases is not null cost is not null and
-     * non-negative cost has zero or null and non-negative
-     *
-     * @param history
-     * @return Pair of boolean and valid status
-     */
-    public Pair<Boolean, Status> isCustomerHistoryValid(CustomerHistory history) {
-
-        Pair<Boolean, Status> valid;
-
-        if (history != null) {
-            if (history.getCustomerId() != null) {
-                if (history.getTransactions() != null) {
-                    for (Transaction t : history.getTransactions()) {
-                        valid = isValid(t);
-                        System.out.println(valid);
-                        if (!valid.getLeft()) {
-                            return valid;
-                        }
-                    }
-                    return new ImmutablePair<>(true, SUCCESS);
-                }
-            }
-        }
-
-        return new ImmutablePair<>(false, CUSTOMER_HISTORY_INVALID);
     }
 
     /**

@@ -1,9 +1,8 @@
 package com.prep.customer.purchasing.services;
 
-import static com.prep.customer.purchasing.services.impl.TransactionService.*;
+import static com.prep.customer.purchasing.services.TransactionService.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.prep.customer.purchasing.services.impl.RewardsService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,6 +57,6 @@ public class RewardsServiceTests extends BaseTest {
         result = RewardsService.calculateReward(new BigDecimal(HUNDRED_VALUE * 2));
         expected = ((HUNDRED_VALUE * 2) - HUNDRED_VALUE) * HUNDRED_MULTIPLIER;
         expected += FIFTY_VALUE * FIFTY_MULTIPLIER;
-        // assertEquals(result, expected);
+        assertEquals(result, expected);
     }
 }

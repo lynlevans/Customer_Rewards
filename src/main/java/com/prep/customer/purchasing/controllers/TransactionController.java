@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.prep.customer.purchasing.domain.Transaction;
 import com.prep.customer.purchasing.domain.enums.Status;
-import com.prep.customer.purchasing.services.impl.TransactionService;
+import com.prep.customer.purchasing.services.TransactionService;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;

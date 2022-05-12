@@ -1,4 +1,4 @@
-package com.prep.customer.purchasing.services.impl;
+package com.prep.customer.purchasing.services;
 
 import static com.prep.customer.purchasing.domain.enums.Status.*;
 
