@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     @Query(value = "select t from Transaction t order by t.customerId, t.date")
-    public List<Transaction> findAllOrdered();
+    List<Transaction> findAllOrdered();
 
     @Query(value = "select t from Transaction t where t.customerId=?1 order by t.date")
-    public List<Transaction> findByCustomerId(Long custId);
+    List<Transaction> findByCustomerId(Long custId);
 
     @Query(value = "select distinct customerId from Transaction")
-    public List<Long> getAllCustomerIds();
+    List<Long> getAllCustomerIds();
 }

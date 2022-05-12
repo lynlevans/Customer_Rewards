@@ -69,7 +69,7 @@ public class TransactionController {
 
         if (transaction != null) {
             try {
-                Pair<Boolean, Status> valid = transactionService.isValid(transaction);
+                Pair<Boolean, Status> valid = TransactionService.isValid(transaction);
                 if (!valid.getLeft()) {
                     return new ResponseEntity<>(
                             valid.getRight().getStatus(), HttpStatus.BAD_REQUEST);

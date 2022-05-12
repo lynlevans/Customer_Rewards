@@ -59,9 +59,9 @@ public class RewardsService extends TransactionService {
                             new CalculateRewardsCallable(cId, startMonth, endMonth)));
         }
 
-        for (Future f : tasks) {
+        for (Future<Pair<Boolean, CustomerRewards>> f : tasks) {
             try {
-                Pair<Boolean, CustomerRewards> result = (Pair<Boolean, CustomerRewards>) f.get();
+                Pair<Boolean, CustomerRewards> result = f.get();
                 if (result.getLeft()) {
                     aggregatedResults.add(result.getValue());
                 } else {
@@ -87,7 +87,7 @@ public class RewardsService extends TransactionService {
         private Long customerId;
         private Integer startMonth, endMonth;
         private List<Transaction> custTransactions;
-        Map<String, Integer> rewardsMap = new HashMap<>();
+        Map<String, Integer> rewardsMap = new LinkedHashMap<>();
 
         public CalculateRewardsCallable() {}
 
@@ -112,24 +112,20 @@ public class RewardsService extends TransactionService {
                     startMonth == null ? LocalDateTime.now().getMonth().getValue() - 2 : startMonth;
             endMonth = endMonth == null ? LocalDateTime.now().getMonth().getValue() : endMonth;
 
-            custTransactions =
-                    custTransactions.stream()
-                            .filter(
-                                    t ->
-                                            t.getDate().getMonth().getValue() >= startMonth
-                                                    && t.getDate().getMonth().getValue()
-                                                            <= endMonth)
-                            .collect(Collectors.toList());
+            custTransactions.stream()
+                    .filter(
+                            tx ->
+                                    tx.getDate().getMonth().getValue() >= startMonth
+                                            && tx.getDate().getMonth().getValue() <= endMonth)
+                    .forEach(
+                            tx -> {
+                                String currMon = tx.getDate().getMonth().name();
+                                rewardsMap.computeIfAbsent(currMon, f -> 0);
+                                int reward = calculateReward(tx.getCost());
+                                rewardsMap.put(currMon, rewardsMap.get(currMon) + reward);
+                            });
 
-            custTransactions.forEach(
-                    tx -> {
-                        String currMon = tx.getDate().getMonth().name();
-                        rewardsMap.computeIfAbsent(currMon, f -> 0);
-                        int reward = calculateReward(tx.getCost());
-                        rewardsMap.put(currMon, rewardsMap.get(currMon) + reward);
-                    });
-
-            return new ImmutablePair(true, new CustomerRewards(customerId, rewardsMap));
+            return new ImmutablePair<>(true, new CustomerRewards(customerId, rewardsMap));
         }
     }
 

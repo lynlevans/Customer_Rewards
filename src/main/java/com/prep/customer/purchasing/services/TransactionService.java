@@ -5,7 +5,6 @@ import static com.prep.customer.purchasing.domain.enums.Status.*;
 import com.prep.customer.purchasing.domain.Transaction;
 import com.prep.customer.purchasing.domain.enums.Status;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -33,11 +32,7 @@ public class TransactionService {
                             && REQUIRED_DECIMAL_PLACES.contains(cost.scale());
 
     public List<Transaction> getAllTransaction() {
-        List<Transaction> Transactions = new ArrayList<Transaction>();
-        transactionRepository
-                .findAllOrdered()
-                .forEach(Transaction -> Transactions.add(Transaction));
-        return Transactions;
+        return transactionRepository.findAllOrdered();
     }
 
     public List<Transaction> getTransactionByCustomerId(Long custId) {
