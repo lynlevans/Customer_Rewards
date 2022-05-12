@@ -19,7 +19,7 @@
 
 ### Tech Stack
     *  Java 12
-    *  SpringBoot 2.6.7
+    *  Spring Boot 2.6.7
     *  H2 DB
     *  Hibernate JPA
     *  ExecutorService
@@ -29,7 +29,7 @@
 
 
 ### Build
-`cd CustRewards` or <top level project directory>
+`cd CustRewards or <top level project directory>`
 
 `mvn package`
 
