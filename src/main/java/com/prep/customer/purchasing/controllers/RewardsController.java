@@ -37,19 +37,19 @@ public class RewardsController {
             @RequestParam(required = false) Integer startMonth,
             @RequestParam(required = false) Integer endMonth) {
 
-        if (!RewardsService.areMonthsValid(startMonth, endMonth)) {
-            return new ResponseEntity(MONTH_ID_ERROR.getStatus(), HttpStatus.BAD_REQUEST);
-        }
-
         try {
+            if (!RewardsService.areMonthsValid(startMonth, endMonth)) {
+                return new ResponseEntity<>(MONTH_ID_ERROR.getStatus(), HttpStatus.BAD_REQUEST);
+            }
+
             List<CustomerRewards> rewardsListing =
                     rewardsService.process(customerIds, startMonth, endMonth);
             String responseStr = jsonMapper.writeValueAsString(rewardsListing);
-            return new ResponseEntity<String>(responseStr, HttpStatus.OK);
+            return new ResponseEntity<>(responseStr, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Exception processing rewards listing.", e);
         }
 
-        return new ResponseEntity<String>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

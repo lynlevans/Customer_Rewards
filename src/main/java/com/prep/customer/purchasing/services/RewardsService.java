@@ -82,7 +82,7 @@ public class RewardsService extends TransactionService {
      *
      * @return <Pair<Boolean, CustomerRewards>
      */
-    public class CalculateRewardsCallable implements Callable<Pair<Boolean, CustomerRewards>> {
+    private class CalculateRewardsCallable implements Callable<Pair<Boolean, CustomerRewards>> {
 
         private Long customerId;
         private Integer startMonth, endMonth;

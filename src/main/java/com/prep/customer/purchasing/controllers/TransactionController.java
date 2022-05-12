@@ -66,19 +66,21 @@ public class TransactionController {
             consumes = "application/json",
             produces = "application/json")
     public ResponseEntity<String> insertTransaction(@RequestBody Transaction transaction) {
-        Pair<Boolean, Status> valid = transactionService.isValid(transaction);
 
-        if (!valid.getLeft()) {
-            return new ResponseEntity<>(valid.getRight().getStatus(), HttpStatus.BAD_REQUEST);
+        if (transaction != null) {
+            try {
+                Pair<Boolean, Status> valid = transactionService.isValid(transaction);
+                if (!valid.getLeft()) {
+                    return new ResponseEntity<>(
+                            valid.getRight().getStatus(), HttpStatus.BAD_REQUEST);
+                }
+
+                transactionService.save(transaction);
+                return new ResponseEntity<>(SUCCESS.getStatus(), HttpStatus.CREATED);
+            } catch (Exception e) {
+                logger.error("Exception creating transactions", e);
+            }
         }
-
-        try {
-            transactionService.save(transaction);
-            return new ResponseEntity<>(SUCCESS.getStatus(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            logger.error("Exception creating transactions", e);
-        }
-
         return new ResponseEntity<>(ERROR.getStatus(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

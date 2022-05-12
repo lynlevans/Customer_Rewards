@@ -34,12 +34,10 @@ public class TransactionService {
 
     public List<Transaction> getAllTransaction() {
         List<Transaction> Transactions = new ArrayList<Transaction>();
-        transactionRepository.findAll().forEach(Transaction -> Transactions.add(Transaction));
+        transactionRepository
+                .findAllOrdered()
+                .forEach(Transaction -> Transactions.add(Transaction));
         return Transactions;
-    }
-
-    public Transaction getTransactionById(int id) {
-        return transactionRepository.findById(id).get();
     }
 
     public List<Transaction> getTransactionByCustomerId(Long custId) {
@@ -48,10 +46,6 @@ public class TransactionService {
 
     public void save(Transaction Transaction) {
         transactionRepository.save(Transaction);
-    }
-
-    public void delete(int id) {
-        transactionRepository.deleteById(id);
     }
 
     public void deleteAll() {
@@ -63,6 +57,7 @@ public class TransactionService {
     }
 
     public static Pair<Boolean, Status> isValid(final Transaction t) {
+
         if (t.getCustomerId() == null) {
             return new ImmutablePair<>(false, CUSTOMER_ID_REQUIRED);
 

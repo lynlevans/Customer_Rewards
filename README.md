@@ -1,5 +1,5 @@
 
-## Customer Rewards Service
+## Customer Purchasing Service :: Rewards
 
 ### Goal
     Build a BE service to manage Customer Rewards for a retailer.

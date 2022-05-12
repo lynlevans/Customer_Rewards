@@ -28,11 +28,6 @@ public class CustomerRewards {
         grandTally();
     }
 
-    public void setMonthlyRewards(final Map<String, Integer> monthlyRewards) {
-        this.monthlyRewards = monthlyRewards;
-        grandTally();
-    }
-
     private void grandTally() {
         grandTotal = monthlyRewards.values().stream().reduce(0, (a, b) -> a + b);
     }
