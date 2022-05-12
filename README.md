@@ -9,6 +9,13 @@
     Rewards forumla : A customer receives 2 points for every dollar spent over $100,
                       plus 1 point for every dollar spent over $50 for each transaction.
 
+    Note: A rough grab of the last 3 months is used in this service.
+          So, just a range of 3 months, represented as integers ( zero-based for January ),
+          is used to designate the months selected for the calculation.
+          An exact 90-day range is not calcuated here.
+          So currently, in May, the last 3 months include March, Apr, May - in leiu today's current date.
+          A more fine-grained service can be developed to calculate rewards from 
+          Mar 12, 2022 - May 12, 2022, being that today is the 12th.
 
 ### Tech Stack
     The service is built using Java 12, SpringBoot 2.6.7.
